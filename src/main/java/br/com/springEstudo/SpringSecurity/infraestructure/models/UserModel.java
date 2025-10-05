@@ -1,7 +1,9 @@
 package br.com.springEstudo.SpringSecurity.infraestructure.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +14,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,11 +31,17 @@ public class UserModel implements UserDetails, Serializable {
 	String username;
 	@Column(nullable = false)
 	String password;
+	@ManyToMany
+	@JoinTable(
+			name="TB_USERS_ROLES",
+			joinColumns=@JoinColumn(name="user_id"),
+			inverseJoinColumns=@JoinColumn(name="role_id"))
+	private List<RoleModel> roles = new ArrayList<>();
+	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.roles;
 	}
 
 	@Override
